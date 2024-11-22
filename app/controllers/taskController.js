@@ -39,6 +39,9 @@ export const ReadeTask = async (req, res) => {
                 }
             },
             {
+                $unwind: "$user_details" // Unwind user_details array for cleaner response
+            },
+            {
                 $project:{
                     _id: 1,
                     title: 1,
@@ -47,9 +50,7 @@ export const ReadeTask = async (req, res) => {
                     user_id: 1,
                     createdAt: 1,
                     updatedAt: 1,
-                    "user_details.firstName" : 1,
-                    "user_details.lastName": 1,
-                    "user_details.email": 1
+                    "user_details.name" : 1,
                 }
             }
         ])
@@ -270,6 +271,59 @@ export const CountTask = async (req, res) => {
             })
         }
     }catch (e) {
+        return res.json({status:"fail","Message":e.toString()})
+    }
+}
+
+
+export const TaskList = async (req, res) => {
+    try{
+        const id = req.headers['id'];
+        const user_id = new mongoose.Types.ObjectId(id)
+        const allTask = await Task.aggregate([
+            {
+                $match:{"user_id": user_id}
+            },
+            {
+                $lookup:{
+                    from: "users", // Name of the 'users' collection
+                    localField: "user_id", // Field in 'tasks'
+                    foreignField: "_id", // Field in 'users'
+                    as: "user_details",
+                }
+            },
+
+            {
+                $unwind: "$user_details" // Unwind user_details array for cleaner response
+            },
+            
+            {
+                $project:{
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    status: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    "user_details.name": 1
+                }
+            }
+        ])
+
+        if(!allTask || allTask === 0){
+            return res.status(404).json({
+                status: "fail",
+                message: "Task not found."
+            });
+        }else{
+            res.status(200).json({
+                status:"success",
+                message:"tasks read successfully",
+                data: allTask
+            })
+        }
+    }
+    catch(e){
         return res.json({status:"fail","Message":e.toString()})
     }
 }
