@@ -1,29 +1,39 @@
+
+import bcrypt from "bcrypt";
+import {saltRounds} from "../../app/config/config.js"
 import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema(
     {
-        firstName: {
+        name: {
             type: String,
-            required: true,
-        },
-        lastName: {
-            type: String,
-            required: true,
+            unique: true,
+            required: [true, 'name must be required'],
         },
         email: {
             type: String,
-            required: true,
+            required: [true, 'email must be required'],
+            unique: true,
+            validate: {
+                validator: function (v) {
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); // Email regex
+                },
+                message: (props) => `${props.value} is not a valid email address!`,
+            }
         },
         phone: {
             type: String,
-            required: true,
+            required: [true, 'phone must be required'],
+            unique: true
         },
         password: {
             type: String,
             required: true,
+            unique: true,
+            set: (v)=>bcrypt.hashSync(v, bcrypt.genSaltSync(saltRounds)), // Hashing password before saving
         },
         otp: {
-            type: String,
+            type: Number,
             default: 0,
         }
     },

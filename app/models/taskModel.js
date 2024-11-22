@@ -12,11 +12,11 @@ const TaskSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            required: true
+            enum: ["Pending", "In Progress", "Completed"],
+            default: "Pending"
         },
-        user:{
+        user_id:{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
             required: true,
         }
     },
@@ -26,6 +26,6 @@ const TaskSchema = new mongoose.Schema(
     }
 );
 
-const task = mongoose.model('Task', TaskSchema);
+const Task = mongoose.model('task', TaskSchema);
 
-export default task;
+export default Task;

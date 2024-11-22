@@ -17,11 +17,11 @@ router.post("/reset-password", UserController.ResetPassword);
 
 //task routes
 router.post("/create-task", authenticateUser, TaskController.CreateTask);
-router.get("/reade-task", authenticateUser, TaskController.ReadeTask);
-router.put("/update-task", authenticateUser, TaskController.UpdateTask);
-router.delete("/delete-task", authenticateUser, TaskController.DeleteTask);
-router.get("/taskList-by-status", authenticateUser, TaskController.TaskListByStatus);
-router.put("/update-taskStatus", authenticateUser, TaskController.UpdateTaskStatus);
+router.get("/reade-task/:id", authenticateUser, TaskController.ReadeTask);
+router.put("/update-task/:id", authenticateUser, TaskController.UpdateTask);
+router.delete("/delete-task/:id", authenticateUser, TaskController.DeleteTask);
+router.get("/list-byStatus", authenticateUser, TaskController.TaskListByStatus);
+router.put("/update-taskStatus/:id", authenticateUser, TaskController.UpdateTaskStatus);
 router.get("/count-task", authenticateUser, TaskController.CountTask);
 
 

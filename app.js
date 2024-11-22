@@ -9,10 +9,11 @@ import {DATABASE, MAX_JSON_SIZE, REQUEST_NUMBER, REQUEST_TIME, WEB_CACHE} from "
 const app = express();
 
 //app level middleware
-app.use(cors());
-app.use(helmet());
 app.use(express.json({limit: MAX_JSON_SIZE}));
 app.use(express.urlencoded({extended: true}));
+app.use(cors());
+app.use(helmet());
+
 
 //app use limiter setup
 const limiter = rateLimit({windowMs:REQUEST_TIME,max:REQUEST_NUMBER});
